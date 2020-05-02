@@ -1,5 +1,7 @@
 package myjdk;
 
+import org.jetbrains.annotations.Nullable;
+
 public class MyLinkedList<T> implements MyList<T> {
 
     @Override
@@ -17,6 +19,7 @@ public class MyLinkedList<T> implements MyList<T> {
         }
     }
 
+    @Nullable
     private Node head;
 
     public MyLinkedList() {
@@ -89,6 +92,16 @@ public class MyLinkedList<T> implements MyList<T> {
     @Override
     public boolean remove(T x) {
         // TODO: da implementare
-        throw new RuntimeException("not implemented");
+
+        Node y = head;
+
+        while(y.next != null) {
+            if (y.data == x) {
+                y.next = y.next.next;
+            }
+            y = y.next;
+        }
+
+        return true;
     }
 }
