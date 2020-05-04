@@ -1,6 +1,7 @@
 package myjdk;
 
 public class MyHashSet<T> extends MyLinkedSet<T> {
+
     @Override
     public void add(T x) {
         MyIterator<T> it = iterator();
