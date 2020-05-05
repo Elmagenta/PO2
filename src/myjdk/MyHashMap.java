@@ -1,38 +1,34 @@
 package myjdk;
 
 public class MyHashMap<K, V> implements MyMap<K, V> {
+    private MyArrayList<Pair<K, V>> m;
+
     @Override
-    public V get(K k) {
-        return null;
+    public V get(K k) throws NotFoundException {
+        MyIterator<Pair<K, V>> it = m.iterator();
+
+        while (it.hasNext()) {
+            Pair<K, V> p = it.next();
+
+            if (p.first.equals(k))
+                return p.second;
+        }
+        throw new NotFoundException();
     }
 
     @Override
-    public void add(Pair<K, V> x) {
+    public void put(K k, V v) {
+        MyIterator<Pair<K, V>> it = m.iterator();
 
-    }
+        while (it.hasNext()) {
+            Pair<K, V> p = it.next();
 
-    @Override
-    public int size() {
-        return 0;
-    }
-
-    @Override
-    public boolean contains(Pair<K, V> x) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(Pair<K, V> x) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public MyIterator<Pair<K, V>> iterator() {
-        return null;
+            if (p.first.equals(k)) {
+                // TODO: fare la stessa cosa con le coppie immutabili
+                p.second = v;
+                return;
+            }
+        }
+        m.add(new Pair<>(k, v));
     }
 }

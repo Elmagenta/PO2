@@ -14,7 +14,8 @@ public class MyArrayList<T> implements MyList<T> {
 
     @Override
     public T get(int i) throws OutOfBoundException {
-        if (i >= actualSize) throw new OutOfBoundException();
+        if (i >= actualSize)
+            throw new OutOfBoundException("Get: Invalid position " + i);
         //noinspection unchecked
         return (T)a[i];
     }

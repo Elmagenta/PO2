@@ -61,7 +61,8 @@ public class MyLinkedList<T> implements MyList<T> {
         Node n = head;
 
         for (; pos > 0; --pos) {
-            if ((n = head.next) == null) throw new OutOfBoundException();
+            if ((n = head.next) == null)
+                throw new OutOfBoundException("Get: Invalid position " + pos);
         }
 
         return n.data;
