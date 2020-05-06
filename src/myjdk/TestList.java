@@ -1,6 +1,6 @@
 package myjdk;
 
-public class Test {
+public class TestList {
     public static void main(String[] args) {
         try {
             MyList<Integer> a = new MyArrayList<>();

@@ -74,7 +74,7 @@ public class MyLinkedList<T> implements MyList<T> {
         Node n = head;
 
         for (; n.next != null && r < i; ++r);
-        n.next = new Node(x, n.next); // TODO: da testare
+        n.next = new Node(x, n.next);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class MyLinkedList<T> implements MyList<T> {
 
         for (; n.next != null && r < i - 1; ++r);
         if (n.next != null) {
-            n.next = n.next.next; // TODO: da testare
+            n.next = n.next.next;
         }
 
         return true;
@@ -92,8 +92,6 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public boolean remove(T x) {
-        // TODO: da implementare
-
         Node y = head;
 
         while(y.next != null) {

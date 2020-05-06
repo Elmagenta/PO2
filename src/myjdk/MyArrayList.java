@@ -38,13 +38,30 @@ public class MyArrayList<T> implements MyList<T> {
 
     @Override
     public void add(int i, T x) {
-        // TODO: da implementare
+        for (int j = 0; j < a.length; j++) {
+            if (j == i) {
+                a[j] = x;
+
+                return;
+            }
+        }
     }
 
     @Override
     public boolean remove(int i) {
-        // TODO: da implementare
-        return false;
+        if (i > actualSize) {
+            return false;
+        }
+        else {
+            for (int j = 0; j < actualSize; j++) {
+                if (j == i) {
+                    a[j] = null;
+                }
+            }
+
+            return true;
+        }
+
     }
 
     @Override
