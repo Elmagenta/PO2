@@ -19,7 +19,7 @@ public class IteratorTest {
         System.out.println(r);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         ArrayList<Integer> a = new ArrayList<>();
         populate(a);
         sum(a);
@@ -31,7 +31,7 @@ public class IteratorTest {
         MyIntegerArrayList u = new MyIntegerArrayList();
         u.populate();
         u.sum();
-    }
+    }*/
 
     public interface Summable extends Iterable<Integer> {
         default void sum() {
@@ -55,6 +55,20 @@ public class IteratorTest {
             add(2);
             add(2);
             add(123);
+        }
+    }
+
+    public static void main(String[] args) {
+        List<Integer> l = new ArrayList<>();
+
+        for (int i = 0; i < 10; ++i) {
+            l.add(i);
+        }
+
+        Iterator<Integer> it = l.iterator();
+        while (it.hasNext()) {
+            int n = it.next();
+            System.out.println(n);
         }
     }
 }

@@ -1,6 +1,7 @@
 package myjdk;
 
 public class MyHashMap<K, V> implements MyMap<K, V> {
+    //TODO: implementare una vera HashMap
     @Override
     public V get(K k) throws NotFoundException {
         return null;
