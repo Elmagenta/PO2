@@ -18,6 +18,16 @@ public class FunctionalTest {
         return c;
     }
 
+    public static <X> void print(Collection<X> c) {
+        map(c, new Function<X, Void>() {
+            @Override
+            public Void apply(X x) {
+                System.out.println(x);
+                return null;
+            }
+        });
+    }
+
     public static void main(String[] args) {
         List<Integer> l = new ArrayList<>();
 
@@ -25,12 +35,18 @@ public class FunctionalTest {
             l.add(i);
         }
 
+        print(l);
+
         Collection<Integer> r = map (l, new Function<Integer, Integer>() {
             @Override
             public Integer apply(Integer x) {
                 return x + 1;
             }
         });
+
+        /* Questa è la stessa cosa fatta con una lambda */
+        Collection<Integer> r2 = map(l, x -> x + 1);
+        print(l);
 
         map (l, new Function<Integer, Integer>() {
             @Override
