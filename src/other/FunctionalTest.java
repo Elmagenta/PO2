@@ -48,6 +48,11 @@ public class FunctionalTest {
         Collection<Integer> r2 = map(l, x -> x + 1);
         print(l);
 
+        /* La LAMBDA è uno zucchero sintattico per una anonymous class.
+        * Quindi le lambda hanno lo stesso tipo dell'anonymous class che sostituiscono.
+        * Una lambda in Java è compatibile non solo con il tipo Function ma con qualunque interfaccia/classe
+        * con un nome qualsiasi, che abbia un solo metodo con un solo argomento ed un solo tipo di ritorno. */
+
         map (l, new Function<Integer, Integer>() {
             @Override
             public Integer apply(Integer x) {
