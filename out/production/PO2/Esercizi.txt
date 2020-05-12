@@ -1,0 +1,4 @@
+Esercizi:
+- MyHashMap
+- MyArrayList -> add, remove, contains
+- TestMap -> Sistemare bug di compilazione

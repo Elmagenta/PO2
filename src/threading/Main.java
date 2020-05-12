@@ -17,7 +17,7 @@ public class Main {
         }
     }
 
-    /* La classe "Thread" è una classe astratta con il metodo "run" astratto */
+    /* La classe "Thread" è una classe con il metodo "run" che non fa nulla e va fatto l'override */
     public static class MyThread extends Thread {
         @Override
         public void run() {
@@ -48,10 +48,23 @@ public class Main {
         Collection<Thread> threads = new ArrayList<>();
         for (int i = 0; i < rand(0, 20); i++) {
             final String name = String.format("Thread #%d", i);
+            final long millis = rand(200, 800);
+            final int times = rand(10, 30);
 
             /* Creazione di un thread tramite una lambda expression */
             Thread t3 = new Thread(() -> {
-                count(name, rand(200, 800), rand(10, 30));
+                count(name, millis, times);
+                /* Posso creare un Thread al volo che STAMPA, poiché in questo caso non mi interessa
+                * tenere il valore di ritorno ma mi interessa soltanto che venga stampata la linea. */
+                new Thread(() -> System.out.println("ciao")).start();
+            });
+
+            /* Stessa cosa della precedente, ma la lambda è dezuccherata in un Runnable */
+            Thread t_3 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    count(name, millis, times);
+                }
             });
 
             /* Creazione di un thread tramite una anonymous class con override al volo del metodo run */
