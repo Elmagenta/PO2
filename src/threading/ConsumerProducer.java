@@ -1,0 +1,88 @@
+package threading;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class ConsumerProducer {
+
+    private static Random rnd = new Random();
+
+    private static int rand(int a, int b) {
+        return rnd.nextInt(b - a + 1) + a;
+    }
+
+    private static void log(String msg) {
+        Thread self = Thread.currentThread();
+        System.out.println(String.format("%s[%d]: %s", self.getName(), self.getId(), msg));
+    }
+
+    public static class Consumer extends Thread {
+        private List<Integer> l;
+
+        public Consumer(List<Integer> l) {
+            this.l = l;
+        }
+
+        @Override
+        public void run() {
+            long ms = rand(10, 1000);
+
+            while (true) {
+                if (!l.isEmpty()) {
+
+                    int n = l.remove(0);
+
+                    log(String.format("Consumer: pop: %d", n));
+                }
+
+                try {
+                    Thread.sleep(ms);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static class Producer extends Thread {
+        private List<Integer> l;
+        private int counter = 0;
+
+        public Producer(List<Integer> l) {
+            this.l = l;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                long ms = rand(10, 1000);
+                int n = counter++;
+                l.add(n);
+
+                log(String.format("Producer: push: %d (size: %d) %s", n, l.size(), l));
+
+                try {
+                    Thread.sleep(ms);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            List<Integer> l = new ArrayList<>();
+            Consumer c = new Consumer(l);
+            Producer p = new Producer(l);
+            c.start();
+            p.start();
+
+            c.join();
+            p.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
