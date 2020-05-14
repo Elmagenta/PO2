@@ -3,13 +3,28 @@ package threading;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ConsumerProducer {
 
     private static Random rnd = new Random();
 
-    private static int rand(int a, int b) {
+    private static synchronized int rand(int a, int b) {
         return rnd.nextInt(b - a + 1) + a;
+    }
+
+    /* Fa la stessa cosa del synchronized sul metodo, ma fa qualcosa di più fine anche
+    * se è da fare manualmente. Entrambi i metodi vanno bene. */
+    private static int rand2(int a, int b) {
+        Lock l = new ReentrantLock();
+        l.lock();
+        try {
+            return rnd.nextInt(b - a + 1) + a;
+        }
+        finally {
+            l.unlock();
+        }
     }
 
     private static void log(String msg) {
