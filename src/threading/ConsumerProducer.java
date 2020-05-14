@@ -26,14 +26,15 @@ public class ConsumerProducer {
 
         @Override
         public void run() {
-            long ms = rand(10, 1000);
+            long ms = rand(1, 10);
 
             while (true) {
-                if (!l.isEmpty()) {
+                synchronized (l) {
+                    if (!l.isEmpty()) {
+                        int n = l.remove(0);
 
-                    int n = l.remove(0);
-
-                    log(String.format("Consumer: pop: %d", n));
+                        log(String.format("Consumer: pop: %d", n));
+                    }
                 }
 
                 try {
@@ -56,11 +57,13 @@ public class ConsumerProducer {
         @Override
         public void run() {
             while (true) {
-                long ms = rand(10, 1000);
+                long ms = rand(1, 10);
                 int n = counter++;
-                l.add(n);
 
-                log(String.format("Producer: push: %d (size: %d) %s", n, l.size(), l));
+                synchronized (l) {
+                    l.add(n);
+                    log(String.format("Producer: push: %d (size: %d) %s", n, l.size(), l));
+                }
 
                 try {
                     Thread.sleep(ms);
