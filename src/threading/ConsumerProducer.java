@@ -10,8 +10,20 @@ public class ConsumerProducer {
 
     private static Random rnd = new Random();
 
-    private static synchronized int rand(int a, int b) {
+    private static int rand(int a, int b) {
         return rnd.nextInt(b - a + 1) + a;
+    }
+
+    // Se fosse necessario synchronized
+    private static synchronized int rand__sync(int a, int b) {
+        return rnd.nextInt(b - a + 1) + a;
+    }
+
+    // Se fosse necessario synchronized dezuccherata
+    private static synchronized int rand__sync_desugared(int a, int b) {
+        synchronized (ConsumerProducer.class) {
+            return rnd.nextInt(b - a + 1) + a;
+        }
     }
 
     /* Fa la stessa cosa del synchronized sul metodo, ma fa qualcosa di più fine anche
@@ -32,28 +44,35 @@ public class ConsumerProducer {
         System.out.println(String.format("%s[%d]: %s", self.getName(), self.getId(), msg));
     }
 
-    public static class Consumer extends Thread {
-        private List<Integer> l;
+    /* Questo oggetto verrà usato soltanto come semaforo, non fa altro.
+    * È per dimostrare che posso sincronizzare non soltanto con gli oggeti che sto usando
+    * dal ConsumerProducer ma anche con altri oggetti, l'importante è utilizzare lo stesso
+    * oggetto per sincronizzare le due parti. */
+    private static Object dummy = new Object();
 
-        public Consumer(List<Integer> l) {
-            this.l = l;
+    public static class Consumer extends Thread {
+        private List<Integer> l1;
+        private List<Integer> l2;
+
+        public Consumer(List<Integer> l1, List<Integer> l2) {
+            this.l1 = l1;
+            this.l2 = l2;
         }
 
         @Override
         public void run() {
-            long ms = rand(1, 10);
-
             while (true) {
-                synchronized (l) {
-                    if (!l.isEmpty()) {
-                        int n = l.remove(0);
+                synchronized (dummy) {
+                    if (!l1.isEmpty() && !l2.isEmpty()) {
+                        int n1 = l1.remove(0);
+                        int n2 = l1.remove(0);
 
-                        log(String.format("Consumer: pop: %d", n));
+                        log(String.format("Consumer: pop: %d, %d (size: %d, %d) %s %s", n1, n2, l1.size(), l2.size(), l1, l2));
                     }
                 }
 
                 try {
-                    Thread.sleep(ms);
+                    Thread.sleep(rand(1, 50));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -62,26 +81,28 @@ public class ConsumerProducer {
     }
 
     public static class Producer extends Thread {
-        private List<Integer> l;
+        private List<Integer> l1;
+        private List<Integer> l2;
         private int counter = 0;
 
-        public Producer(List<Integer> l) {
-            this.l = l;
+        public Producer(List<Integer> l1, List<Integer> l2) {
+            this.l1 = l1;
+            this.l2 = l2;
         }
 
         @Override
         public void run() {
             while (true) {
-                long ms = rand(1, 10);
                 int n = counter++;
 
-                synchronized (l) {
-                    l.add(n);
-                    log(String.format("Producer: push: %d (size: %d) %s", n, l.size(), l));
+                synchronized (dummy) {
+                    l1.add(n);
+                    l2.add(n);
+                    log(String.format("Producer: push: %d (size: %d, %d) %s %s", n, l1.size(), l2.size(), l1, l2));
                 }
 
                 try {
-                    Thread.sleep(ms);
+                    Thread.sleep(rand(1, 50));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -91,14 +112,44 @@ public class ConsumerProducer {
 
     public static void main(String[] args) {
         try {
-            List<Integer> l = new ArrayList<>();
-            Consumer c = new Consumer(l);
-            Producer p = new Producer(l);
+            List<Integer> l1 = new ArrayList<>();
+            List<Integer> l2 = new ArrayList<>();
+            Consumer c = new Consumer(l1, l2);
+            Producer p1 = new Producer(l1, l2);
+            Producer p2 = new Producer(l1, l2);
             c.start();
-            p.start();
+            p1.start();
+            p2.start();
+
+            /* Anonymous class per replicare il codice del Producer, in questo caso però avendo due Producer dovrei copiare
+            * il codice due volte. Quindi IN QUESTO CASO non vale la pena farla, poiché il codice viene copiato due volte.
+            * Pertanto conviene fare una classe normale per evitare di ripetere il codice. */
+            Thread p3 = new Thread() {
+                private int counter = 0;
+
+                @Override
+                public void run() {
+                    while (true) {
+                        int n = counter++;
+
+                        synchronized (dummy) {
+                            l1.add(n);
+                            l2.add(n);
+                            log(String.format("Producer: push: %d (size: %d, %d) %s %s", n, l1.size(), l2.size(), l1, l2));
+                        }
+
+                        try {
+                            Thread.sleep(rand(1, 50));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
 
             c.join();
-            p.join();
+            p1.join();
+            p2.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
