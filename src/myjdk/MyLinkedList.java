@@ -1,5 +1,6 @@
 package myjdk;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MyLinkedList<T> implements MyList<T> {
@@ -10,12 +11,19 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     private class Node {
+        @Nullable
         public T data;
+        @Nullable
         public Node next;
 
-        public Node(T data, Node next) {
+        public Node(@Nullable T data, @NotNull Node next) {
             this.data = data;
             this.next = next;
+        }
+
+        public Node(@Nullable T data) {
+            this.data = data;
+            this.next = null;
         }
     }
 
@@ -27,7 +35,7 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     public void add(T e) {
-        head = new Node(e, head);
+        head = head == null ? new Node(e) : new Node(e, head);
     }
 
     @Override
@@ -57,6 +65,7 @@ public class MyLinkedList<T> implements MyList<T> {
         head = null;
     }
 
+    @Nullable
     public T get(int pos) throws OutOfBoundException {
         Node n = head;
 

@@ -147,6 +147,53 @@ public class ConsumerProducer {
                 }
             };
 
+            /* Caso SIMILE al precedente ma non bisogna confondersi.
+            * In questo caso NON sto definendo una classe anonima, ma sto costruendo al volo un nuovo Runnable
+            * che passerò al costruttore di Thread in maniera che venga costruito il mio nuovo Thread. */
+            Thread p3_2 = new Thread(new Runnable() {
+                private int counter = 0;
+
+                @Override
+                public void run() {
+                    while (true) {
+                        int n = counter++;
+
+                        synchronized (dummy) {
+                            l1.add(n);
+                            l2.add(n);
+                            log(String.format("Producer: push: %d (size: %d, %d) %s %s", n, l1.size(), l2.size(), l1, l2));
+                        }
+
+                        try {
+                            Thread.sleep(rand(1, 50));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            /* Stessa cosa di quella sopra ma con le lambda */
+            Thread p3_3 = new Thread(() -> {
+                int counter = 0;
+
+                while (true) {
+                    int n = counter++;
+
+                    synchronized (dummy) {
+                        l1.add(n);
+                        l2.add(n);
+                        log(String.format("Producer: push: %d (size: %d, %d) %s %s", n, l1.size(), l2.size(), l1, l2));
+                    }
+
+                    try {
+                        Thread.sleep(rand(1, 50));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             c.join();
             p1.join();
             p2.join();
