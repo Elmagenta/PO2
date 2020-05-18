@@ -98,6 +98,12 @@ public class SortingTest {
         System.out.println(l4);
         Collections.sort(l4, (o1, o2) -> Double.compare(o1.height, o2.height));
         System.out.println(l4);
+
+        System.out.println(l5);
+        Collections.sort(l5, (Square s1, Square s2) -> Double.compare(s1.diagonal(), s2.diagonal()));
+        System.out.println(l5);
+        Collections.sort(l5, (Rectangle s1, Rectangle s2) -> Double.compare(s1.area(), s2.area()));
+        System.out.println(l5);
     }
 
     /* Implementazione al volo per non andare a sporcare la classe "Rectangle" */
@@ -127,6 +133,19 @@ public class SortingTest {
 
         public Square(double l) {
             super(l, l);
+        }
+
+        public double side() {
+            return base;
+        }
+
+        public double diagonal() {
+            return side() * Math.sqrt(2.);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Square[%g]", side());
         }
     }
 }
