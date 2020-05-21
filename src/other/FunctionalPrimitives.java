@@ -31,6 +31,31 @@ public class FunctionalPrimitives {
         });
     }
 
+    /* Rimuove l'elemento utilizzando la "remove" dell'iteratore */
+    public static <A> Iterable<A> filter__imperative(Iterable<A> l, Function<A, Boolean> p) {
+        Iterator<A> it = l.iterator();
+
+        while (it.hasNext()) {
+            A a = it.next();
+            if (!p.apply(a))
+                it.remove();
+        }
+
+        return l;
+    }
+
+    /* Crea una nuova lista a cui vengono aggiunti gli elementi corretti */
+    public static <A> Iterable<A> filter__pure(Iterable<A> l, Function<A, Boolean> p) {
+        List<A> r = new ArrayList<>();
+
+        for (A a : l) {
+            if (p.apply(a))
+                r.add(a);
+        }
+
+        return r;
+    }
+
     public static <A, B> B fold(Iterable<A> l, B zero, BiFunction<A, B, B> f) {
         B acc = zero;
 
@@ -47,6 +72,11 @@ public class FunctionalPrimitives {
 
     public static <A, B> B fold_recur(Iterator<A> it, B zero, BiFunction<A, B, B> f) {
         return it.hasNext() ? fold_recur(it, f.apply(it.next(), zero), f) : zero;
+    }
+
+    @FunctionalInterface
+    public interface TriFunction <A, B, C, R> {
+        R apply(A a, B b, C c);
     }
 
     public static void main(String[] args) {
@@ -78,5 +108,25 @@ public class FunctionalPrimitives {
 
         Collection<Integer> r3 = map(l, (x) -> x * 2);
         int sum = fold(r3, 0, (x, acc) -> x + acc);
+
+        /* Spiegazione dell'estrazione del "method reference".
+        * Tutti i metodi chbe non prendono argomenti, dal punto di vista funzionale si trasformano in funzioni con almeno
+        * un argomento che è il tipo di ritorno del metodo. */
+        String s = "ciao";
+        boolean b = s.isEmpty();
+        Function<String, Boolean> f = String::isEmpty;
+
+        int i = s.indexOf('c');
+        BiFunction<String, Character, Integer> h = String::indexOf;
+
+        int j = s.lastIndexOf('c', 8);
+        TriFunction<String, Character, Integer, Integer> g = String::lastIndexOf;
+
+        List<String> l4 = new ArrayList<>();
+        l4.add("pippo");
+        l4.add("baudo");
+        l4.add("pluto");
+        String s2 = String.join(",", l4);
+        BiFunction<CharSequence, Iterable<? extends CharSequence>, String> k = String::join;
     }
 }
