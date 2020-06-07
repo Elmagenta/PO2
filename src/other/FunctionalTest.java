@@ -102,7 +102,7 @@ public class FunctionalTest {
 
         /* Spiegazione extra sulle lambda */
         Function<Integer, Integer> f1 = x -> x + 1;
-        Function<Integer, Integer> f1_2 = x -> {return x + 1; }; // Stessa cpsa di quella sopra ma più estesa
+        Function<Integer, Integer> f1_2 = x -> {return x + 1; }; // Stessa cosa di quella sopra ma più estesa
         Function<Integer, Integer> f2 = new Function<Integer, Integer>() {
             @Override
             public Integer apply(Integer x) {

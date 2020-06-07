@@ -26,6 +26,13 @@ public class ConsumerProducer {
         }
     }
 
+    // Stesso caso di prima ma se il metodo non è statico la sincronizzazione avviene sul this
+    private synchronized int rand__sync_desugared_nonstatic(int a, int b) {
+        synchronized (this) {
+            return rnd.nextInt(b - a + 1) + a;
+        }
+    }
+
     /* Fa la stessa cosa del synchronized sul metodo, ma fa qualcosa di più fine anche
     * se è da fare manualmente. Entrambi i metodi vanno bene. */
     private static int rand2(int a, int b) {
